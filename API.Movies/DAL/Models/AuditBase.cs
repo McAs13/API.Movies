@@ -7,6 +7,6 @@ namespace API.Movies.DAL.Models
         [Key] //Este data annotation indica que esta propiedad es la clave primaria de la entidad
         public virtual int Id { get; set; }
         public virtual DateTime CreateDate { get; set; }
-        public virtual DateTime ModifiedDate { get; set; }
+        public virtual DateTime? ModifiedDate { get; set; }
     }
 }

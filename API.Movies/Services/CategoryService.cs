@@ -10,9 +10,10 @@ namespace API.Movies.Services
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
-        public CategoryService(ICategoryRepository categoryRepository)
+        public CategoryService(ICategoryRepository categoryRepository, IMapper mapper)
         {
             _categoryRepository = categoryRepository;
+            _mapper = mapper;
         }
 
         public Task<bool> CategoryExistsByIdAsync(int id)
@@ -37,9 +38,9 @@ namespace API.Movies.Services
 
         public async Task<ICollection<CategoryDTO>> GetCategoriesAsync()
         {
-            var categories = _categoryRepository.GetCategoriesAsync(); // Solo estoy llamando el metodo desde la capa de Repository
+            var categories = await _categoryRepository.GetCategoriesAsync(); // Solo estoy llamando el metodo desde la capa de Repository
 
-            return _mapper.Map<ICollection<CategoryDTO>>(categories); // Mapeo la lista de categories a CategoryDTO
+            return _mapper.Map<ICollection<CategoryDTO>>(categories);
         }
 
         public Task<CategoryDTO> GetCategoryByIdAsync(int id)

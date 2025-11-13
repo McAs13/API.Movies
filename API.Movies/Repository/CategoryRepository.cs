@@ -50,10 +50,12 @@ namespace API.Movies.Repository
 
         public async Task<ICollection<Category>> GetCategoriesAsync()
         {
-            return await _context.Categories
+            var categories = await _context.Categories
                 .AsNoTracking() // Mejora el rendimiento al no rastrear los cambios en las entidades
                 .OrderBy(c => c.Name) // Ordena las categorías por nombre de forma ascendente
                 .ToListAsync(); // Retorna todas las categorías como una lista de forma asíncrona
+
+            return categories;
         }
 
         public async Task<Category> GetCategoryByIdAsync(int id) // Al ser un método asíncrono, debería usar async/await
