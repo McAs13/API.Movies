@@ -10,45 +10,73 @@ namespace API.Movies.Services
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
+
         public CategoryService(ICategoryRepository categoryRepository, IMapper mapper)
         {
             _categoryRepository = categoryRepository;
             _mapper = mapper;
         }
 
-        public Task<bool> CategoryExistsByIdAsync(int id)
+        public async Task<bool> CategoryExistsByIdAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> CategoryExistsByNameAsync(string name)
+        public async Task<bool> CategoryExistsByNameAsync(string name)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> CreateCategoryAsync(Category category)
+        public async Task<CategoryDTO> CreateCategoryAsync(CategoryCreateDTO categoryCreateDTO)
         {
-            throw new NotImplementedException();
+            //Validar si la categoría ya existe
+            var categoryExists = await _categoryRepository.CategoryExistsByNameAsync(categoryCreateDTO.Name);
+
+            if (categoryExists)
+            {
+                throw new InvalidOperationException($"Ya existe una categoría con el nombre de '{categoryCreateDTO.Name}'");
+            }
+
+            //Mapear el DTO a la entidad
+            var category = _mapper.Map<Category>(categoryCreateDTO);
+
+            //Crear la categoría en el repositorio
+            var categoryCreated = await _categoryRepository.CreateCategoryAsync(category);
+
+            if (!categoryCreated)
+            {
+                throw new Exception("Ocurrió un error al crear la categoría.");
+            }
+
+            //Mapear la entidad creada a DTO
+            return _mapper.Map<CategoryDTO>(category);
         }
 
-        public Task<bool> DeleteCategoryAsync(int id)
+        public async Task<bool> DeleteCategoryAsync(int id)
         {
             throw new NotImplementedException();
         }
 
         public async Task<ICollection<CategoryDTO>> GetCategoriesAsync()
         {
-            var categories = await _categoryRepository.GetCategoriesAsync(); // Solo estoy llamando el metodo desde la capa de Repository
+            // Obtener las categorías del repositorio
+            var categories = await _categoryRepository.GetCategoriesAsync();
 
+            // Mapear toda la colección de una vez
             return _mapper.Map<ICollection<CategoryDTO>>(categories);
         }
 
-        public Task<CategoryDTO> GetCategoryByIdAsync(int id)
+
+        public async Task<CategoryDTO> GetCategoryAsync(int id)
         {
-            throw new NotImplementedException();
+            // Obtener la categoría del repositorio
+            var category = await _categoryRepository.GetCategoryAsync(id);
+
+            // Mapear toda la colección de una vez
+            return _mapper.Map<CategoryDTO>(category);
         }
 
-        public Task<bool> UpdateCategoryAsync(Category category)
+        public Task<CategoryDTO> UpdateCategoryAsync(int id, Category categoryDto)
         {
             throw new NotImplementedException();
         }
