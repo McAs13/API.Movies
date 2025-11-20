@@ -2,7 +2,7 @@
 
 namespace API.Movies.DAL.Models.Dtos
 {
-    public class CategoryDTO
+    public class CategoryDto
     {
         public int Id { get; set; }
         [Required(ErrorMessage = "El nombre de la categoría es obligatorio.")]
