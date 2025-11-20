@@ -32,8 +32,15 @@ namespace API.Movies.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<CategoryDto>> GetCategoryAsync(int id)
         {
-            var categoryDto = await _categoryService.GetCategoryAsync(id);
-            return Ok(categoryDto);
+            try
+            {
+                var categoryDto = await _categoryService.GetCategoryAsync(id);
+                return Ok(categoryDto);
+            }
+            catch (InvalidOperationException ex) when (ex.Message.Contains("No se encontró"))
+            {
+                return NotFound(new { ex.Message }); // Devolvemos un 404 Not Found si no se encuentra la categoría a actualizar
+            }
         }
 
         [HttpPost(Name = "CreateCategoryAsync")]
@@ -95,6 +102,28 @@ namespace API.Movies.Controllers
             catch (InvalidOperationException ex) when (ex.Message.Contains("No se encontró"))
             {
                 return NotFound(new { ex.Message }); // Devolvemos un 404 Not Found si no se encuentra la categoría a actualizar
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpDelete("{id:int}", Name = "DeleteCategoryAsync")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> DeleteCategoryAsync(int id)
+        {
+            try
+            {
+                var deletedCategory = await _categoryService.DeleteCategoryAsync(id); // Llamamos al servicio para borrar la categoría
+                return Ok(deletedCategory); // Retorno 200 OK si se ha borrado correctamente
+            }
+            catch (InvalidOperationException ex) when (ex.Message.Contains("No se encontró"))
+            {
+                return NotFound(new { ex.Message }); // Devolvemos un 404 Not Found si no se encuentra la categoría a eliminar
             }
             catch (Exception ex)
             {
