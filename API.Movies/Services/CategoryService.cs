@@ -110,7 +110,7 @@ namespace API.Movies.Services
             // Verificar si ya existe una categoría con el mismo nombre (excluyendo la categoría actual)
             var nameExists = await _categoryRepository.CategoryExistsByNameAsync(dto.Name);
 
-            if (nameExists) // Si existe, lanzar una excepción
+            if (nameExists && !string.Equals(categoryExists.Name, dto.Name, StringComparison.OrdinalIgnoreCase))
             {
                 throw new InvalidOperationException($"Ya existe una categoría con el nombre de '{dto.Name}'");
             }

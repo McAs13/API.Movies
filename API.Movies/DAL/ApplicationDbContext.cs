@@ -12,5 +12,6 @@ namespace API.Movies.DAL
 
         // Sección para crear el DbSet de cada una de las entidades del modelo
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Movie> Movies { get; set; }
     }
 }
